@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>INITIALIZING</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    background: black;
+    color: #b30000;
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+}
+
+/* INIT SCREEN */
+#init {
+    position: fixed;
+    inset: 0;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    font-size: 14px;
+}
+
+#init span {
+    margin-top: 8px;
+    animation: blink 1.2s infinite;
+}
+
+@keyframes blink {
+    0%,50%,100% { opacity: 1; }
+    25%,75% { opacity: 0.2; }
+}
+
+/* MAIN */
+header {
+    padding: 16px;
+    border-bottom: 1px solid #400;
+    text-align: center;
+}
+
+h1 {
+    font-size: 22px;
+    animation: glitch 0.25s infinite;
+}
+
+@keyframes glitch {
+    0% { text-shadow: 2px 0 red; }
+    50% { text-shadow: -2px 0 darkred; }
+    100% { text-shadow: 0 0 red; }
+}
+
+/* Eye */
+.eye {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 80px;
+    height: 48px;
+    background: #e6e6e6;
+    border-radius: 50%;
+    border: 3px solid #400;
+    z-index: 999;
+}
+
+.pupil {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: black;
+    border-radius: 50%;
+    top: 15px;
+    left: 31px;
+}
+
+.main {
+    padding: 18px;
+}
+
+.image-box {
+    border: 2px solid #400;
+    padding: 6px;
+    background: #050000;
+}
+
+.image-box img {
+    width: 100%;
+    filter: contrast(1.25) brightness(0.8);
+}
+
+.log {
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+/* Flicker */
+.flicker {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,0,0,0.07);
+    pointer-events: none;
+    animation: flicker 0.1s infinite;
+}
+
+@keyframes flicker {
+    0% { opacity: 0.05; }
+    50% { opacity: 0.12; }
+    100% { opacity: 0.05; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="init">
+    INITIALIZING SESSION<br>
+    CHECKING DEVICE<br>
+    GRANTING ACCESS<br>
+    <span>DO NOT CLOSE</span>
+</div>
+
+<div class="flicker"></div>
+
+<div class="eye">
+    <div class="pupil" id="pupil"></div>
+</div>
+
+<header>
+    <h1>WATCHING //</h1>
+    <div style="font-size:12px;">TOUCH DETECTED · TRACE ACTIVE</div>
+</header>
+
+<div class="main">
+    <div class="image-box">
+        <img src="image.jpg" alt="REDACTED">
+    </div>
+
+    <div class="log" id="log">
+[SYSTEM] Mobile session bound
+[ACCESS] Camera denied
+[WARNING] Do not leave page
+[STATUS] It is closer than you think
+    </div>
+</div>
+
+<script>
+const pupil = document.getElementById('pupil');
+const eye = document.querySelector('.eye');
+
+function moveEye(x, y) {
+    const rect = eye.getBoundingClientRect();
+    const eyeX = rect.left + rect.width / 2;
+    const eyeY = rect.top + rect.height / 2;
+    const angle = Math.atan2(y - eyeY, x - eyeX);
+    const r = 10;
+    pupil.style.transform = `translate(${Math.cos(angle)*r}px, ${Math.sin(angle)*r}px)`;
+}
+
+document.addEventListener('mousemove', e => moveEye(e.clientX, e.clientY));
+document.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    moveEye(t.clientX, t.clientY);
+});
+
+setTimeout(() => {
+    document.getElementById('init').style.display = 'none';
+    document.title = "WATCHING";
+}, 3200);
+
+// random log messages
+const log = document.getElementById('log');
+const msgs = [
+    "[TRACE] signal locked",
+    "[WARNING] do not look away",
+    "[SYSTEM] breathing detected",
+    "[ERROR] exit blocked"
+];
+
+setInterval(() => {
+    const m = document.createElement("div");
+    m.textContent = msgs[Math.floor(Math.random()*msgs.length)];
+    log.appendChild(m);
+    if (log.children.length > 12) log.removeChild(log.firstChild);
+}, 2600);
+</script>
+
+</body>
+</html>
